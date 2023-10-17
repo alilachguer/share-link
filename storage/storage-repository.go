@@ -1,4 +1,4 @@
-package repository
+package storage
 
 import (
 	"github.com/alilachguer/share-link/models"

@@ -2,21 +2,34 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/alilachguer/share-link/database"
-	"github.com/alilachguer/share-link/repository"
+	"github.com/alilachguer/share-link/storage"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	// mem := database.NewMemDB()
-	conn, err := database.NewDB("mysql", "root:root@/user_management")
+
+	if err := godotenv.Load(".env"); err != nil {
+		panic(err)
+	}
+
+	var (
+		dbUser = os.Getenv("DB_USER_NAME")
+		dbPass = os.Getenv("DB_PASSWORD")
+		dbName = os.Getenv("DB_DATABASE_NAME")
+	)
+
+	conn, err := database.NewDB("mysql", dbUser+":"+dbPass+"@/"+dbName)
 	if err != nil {
 		panic(err)
 	}
 	defer conn.Conn.Close()
 
-	db := repository.NewStorageRepo(conn)
+	db := storage.NewStorageRepo(conn)
 
 	allLinks, err := db.GetAll()
 	if err != nil {
