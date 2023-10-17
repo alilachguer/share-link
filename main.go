@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/alilachguer/share-link/database"
-
+	"github.com/alilachguer/share-link/repository"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -16,7 +16,7 @@ func main() {
 	}
 	defer conn.Conn.Close()
 
-	db := database.NewStorage(conn)
+	db := repository.NewStorageRepo(conn)
 
 	allLinks, err := db.GetAll()
 	if err != nil {
