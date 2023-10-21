@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 
-	"github.com/alilachguer/share-link/models"
+	"github.com/alilachguer/share-link/src/models"
 )
 
 type DB struct {
@@ -19,16 +19,8 @@ func NewDB(driver string, connectionString string) (*DB, error) {
 	return &DB{Conn: dbConnection}, nil
 }
 
-type User struct {
-	id        uint64
-	email     string
-	firstName string
-	lastName  string
-	pass      string
-}
-
 func (mydb *DB) All() ([]models.ShareLink, error) {
-	rows, err := mydb.Conn.Query("SELECT * FROM users")
+	rows, err := mydb.Conn.Query("SELECT * FROM sharelinks")
 	if err != nil {
 		return nil, err
 	}
@@ -37,13 +29,13 @@ func (mydb *DB) All() ([]models.ShareLink, error) {
 
 	links := []models.ShareLink{}
 	for rows.Next() {
-		var user User
-		err := rows.Scan(&user.id, &user.email, &user.firstName, &user.lastName, &user.pass)
+		var sl models.ShareLink
+		err := rows.Scan(&sl.ID, &sl.Link, &sl.Redirect, &sl.Visited)
 		if err != nil {
 			return nil, err
 		}
 
-		links = append(links, models.ShareLink{ID: user.id, Link: user.firstName, Redirect: user.email, Visited: 1})
+		links = append(links, sl)
 	}
 
 	if err = rows.Err(); err != nil {
@@ -54,7 +46,7 @@ func (mydb *DB) All() ([]models.ShareLink, error) {
 }
 
 func (mydb *DB) Count() (int, error) {
-	row := mydb.Conn.QueryRow("SELECT COUNT(*) FROM users")
+	row := mydb.Conn.QueryRow("SELECT COUNT(*) FROM sharelinks")
 
 	var count int
 	err := row.Scan(&count)

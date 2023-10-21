@@ -4,15 +4,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alilachguer/share-link/database"
-	"github.com/alilachguer/share-link/storage"
+	"github.com/alilachguer/share-link/src/database"
+	"github.com/alilachguer/share-link/src/storage"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	// mem := database.NewMemDB()
-
 	if err := godotenv.Load(".env"); err != nil {
 		panic(err)
 	}

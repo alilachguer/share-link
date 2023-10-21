@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/alilachguer/share-link/models"
+	"github.com/alilachguer/share-link/src/models"
 )
 
 type Mem struct {
