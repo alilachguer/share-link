@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 
-	"github.com/alilachguer/share-link/src/models"
+	"github.com/alilachguer/share-link/internal/models"
 )
 
 type DB struct {
@@ -24,7 +24,6 @@ func (mydb *DB) All() ([]models.ShareLink, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	links := []models.ShareLink{}

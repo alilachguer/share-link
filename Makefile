@@ -21,7 +21,7 @@ migrate-down:
 
 build:
 	if [ -f "${BINARY}" ]; then rm ${BINARY}; fi
-	go build -o ${BINARY} main.go
+	go build -o ${BINARY} cmd/main.go
 
 run: build
 	./${BINARY}

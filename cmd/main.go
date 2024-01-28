@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alilachguer/share-link/src/database"
-	"github.com/alilachguer/share-link/src/storage"
+	"github.com/alilachguer/share-link/internal/database"
+	"github.com/alilachguer/share-link/internal/storage"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
@@ -28,6 +28,7 @@ func main() {
 	defer conn.Conn.Close()
 
 	db := storage.NewStorageRepo(conn)
+	// db := storage.NewStorageRepo(database.NewMemDB())
 
 	allLinks, err := db.GetAll()
 	if err != nil {
