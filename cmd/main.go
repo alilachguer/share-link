@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/alilachguer/share-link/internal/database"
@@ -12,16 +13,13 @@ import (
 
 func main() {
 	if err := godotenv.Load(".env"); err != nil {
-		panic(err)
+		log.Println("could not load environment .env :", err)
 	}
 
-	var (
-		dbUser = os.Getenv("DB_USER_NAME")
-		dbPass = os.Getenv("DB_PASSWORD")
-		dbName = os.Getenv("DB_DATABASE_NAME")
-	)
+	var config EnvConfig
+	loadEnvVariables(&config)
 
-	conn, err := database.NewDB("mysql", dbUser+":"+dbPass+"@/"+dbName)
+	conn, err := database.NewDB("mysql", config.dbUser+":"+config.dbPassword+"@/"+config.dbName)
 	if err != nil {
 		panic(err)
 	}
@@ -45,4 +43,16 @@ func main() {
 	}
 
 	fmt.Println(count)
+}
+
+type EnvConfig struct {
+	dbUser     string
+	dbPassword string
+	dbName     string
+}
+
+func loadEnvVariables(conf *EnvConfig) {
+	conf.dbUser = os.Getenv("DB_USER_NAME")
+	conf.dbPassword = os.Getenv("DB_PASSWORD")
+	conf.dbName = os.Getenv("DB_DATABASE_NAME")
 }
