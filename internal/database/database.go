@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/alilachguer/share-link/internal/models"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type DB struct {
@@ -20,7 +21,7 @@ func NewDB(driver string, connectionString string) (*DB, error) {
 }
 
 func (mydb *DB) All() ([]models.ShareLink, error) {
-	rows, err := mydb.Conn.Query("SELECT * FROM sharelinks")
+	rows, err := mydb.Conn.Query("SELECT rowid, * FROM sharelinks")
 	if err != nil {
 		return nil, err
 	}
@@ -29,10 +30,13 @@ func (mydb *DB) All() ([]models.ShareLink, error) {
 	links := []models.ShareLink{}
 	for rows.Next() {
 		var sl models.ShareLink
-		err := rows.Scan(&sl.ID, &sl.Link, &sl.Redirect, &sl.Visited)
+		var v sql.NullInt16
+		err := rows.Scan(&sl.ID, &sl.Link, &sl.Redirect, &v)
 		if err != nil {
 			return nil, err
 		}
+
+		sl.Visited = isVisited(v)
 
 		links = append(links, sl)
 	}
@@ -42,6 +46,18 @@ func (mydb *DB) All() ([]models.ShareLink, error) {
 	}
 
 	return links, nil
+}
+
+func (mydb *DB) GetRedirect(link string) (string, error) {
+	row := mydb.Conn.QueryRow("SELECT redirect FROM sharelinks WHERE link = ?", link)
+
+	var redirect string
+	err := row.Scan(&redirect)
+	if err != nil {
+		return "", err
+	}
+
+	return redirect, nil
 }
 
 func (mydb *DB) Count() (int, error) {
@@ -58,4 +74,8 @@ func (mydb *DB) Count() (int, error) {
 
 func (mydb *DB) Create(sl models.ShareLink) ([]models.ShareLink, error) {
 	return []models.ShareLink{}, nil
+}
+
+func isVisited(i sql.NullInt16) bool {
+	return i.Valid && i.Int16 != 0
 }

@@ -1,9 +1,8 @@
 -- Add up migration script here
 CREATE TABLE IF NOT EXISTS sharelinks (
-    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    link varchar(255),
-    redirect varchar(100),
-    visited int
+    link varchar(255) UNIQUE,
+    redirect varchar(255),
+    visited integer
 );
 
 

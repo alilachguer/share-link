@@ -1,10 +1,8 @@
 package models
 
-import "database/sql"
-
 type ShareLink struct {
-	ID       uint64
+	ID       int
 	Link     string
 	Redirect string
-	Visited  sql.NullInt64
+	Visited  bool
 }

@@ -8,6 +8,8 @@ type storage interface {
 	All() ([]models.ShareLink, error)
 	Count() (int, error)
 	Create(models.ShareLink) ([]models.ShareLink, error)
+
+	GetRedirect(string) (string, error)
 }
 
 type StorageRepo struct {
@@ -20,6 +22,10 @@ func NewStorageRepo(storage storage) *StorageRepo {
 
 func (s *StorageRepo) GetAll() ([]models.ShareLink, error) {
 	return s.db.All()
+}
+
+func (s *StorageRepo) GetRedirectByLink(link string) (string, error) {
+	return s.db.GetRedirect(link)
 }
 
 func (s *StorageRepo) GetCount() (int, error) {
